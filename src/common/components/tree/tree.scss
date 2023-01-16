@@ -1,0 +1,73 @@
+@keyframes scale {
+  from {
+    transform: translateY(-15px);
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.tree {
+  height: 95%;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  list-style: none;
+
+  li {
+    font-size: 1.6rem;
+
+    ul {
+      list-style: none;
+      margin-bottom: 5px;
+      transform: translateY(-15px);
+      opacity: 0;
+      animation: scale 0.3s forwards;
+      transform-origin: top;
+    }
+
+    span {
+      display: block;
+      cursor: pointer;
+      white-space: nowrap;
+      width: 100%;
+
+      &:hover {
+        background-color: #333;
+      }
+
+      &.file {
+        position: relative;
+
+        &:before {
+          content: "";
+          background: url("../../../assets/icons/file.svg");
+          background-size: contain;
+          position: absolute;
+          width: 15px;
+          height: 15px;
+          top: 50%;
+          transform: translateY(-45%);
+          left: -26px;
+        }
+      }
+
+      &.directory {
+        position: relative;
+
+        &:before {
+          content: "";
+          background: url("../../../assets/icons/directory-closed.svg");
+          background-size: contain;
+          position: absolute;
+          width: 15px;
+          height: 15px;
+          top: 50%;
+          transform: translateY(-45%);
+          left: -26px;
+        }
+      }
+    }
+  }
+}

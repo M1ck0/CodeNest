@@ -1,0 +1,57 @@
+.toolbar {
+  padding: 10px 20px;
+  display: flex;
+  gap: 20px;
+
+  button,
+  div {
+    all: unset;
+    font-size: 1.6rem;
+    cursor: pointer;
+  }
+
+  .menu {
+    position: relative;
+
+    &:hover {
+      .value {
+        opacity: 1;
+        transform: translateY(0);
+        visibility: visible;
+      }
+    }
+
+    .value {
+      width: 150px;
+      left: -10px;
+      transition: all 0.2s ease-in-out;
+      top: 30px;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-15px);
+      overflow: hidden;
+      height: auto;
+      position: absolute;
+      z-index: 99;
+      background-color: #242424;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      border: 1px solid #333;
+      border-radius: 5px;
+
+      button {
+        width: 100%;
+        padding: 10px 20px;
+        white-space: nowrap;
+        transition: all 0.1s ease-in-out;
+
+        &:hover {
+          background-color: #333;
+        }
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+}
