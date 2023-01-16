@@ -1,29 +1,34 @@
 import React, { useEffect } from "react";
 
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { readTextFile, writeFile, readDir } from "@tauri-apps/api/fs";
 import { open, save } from "@tauri-apps/api/dialog";
 
+import { filesState } from "../../state/files";
+import { directoryState } from "../../state/directory";
+import { codeState } from "../../state/code";
+
 import "./toolbar.scss";
 
-const Toolbar = ({
-  code,
-  setCode,
-  activeFile,
-  setActiveFile,
-  setActiveDir,
-  openedFiles,
-  setOpenedFiles,
-}) => {
+const Toolbar = () => {
+  const [files, setFiles] = useRecoilState(filesState);
+  const [code, setCode] = useRecoilState(codeState);
+
+  const setDirectory = useSetRecoilState(directoryState);
+
+  const { activeFile, openedFiles } = files;
+
   const onSave = async () => {
     if (activeFile) {
       await writeFile(activeFile, code);
-
-      setActiveFile(activeFile);
     } else {
       const file = await save();
       await writeFile(file, code);
 
-      setActiveFile(file);
+      setFiles((prevState) => ({
+        openedFiles: prevState.openedFiles,
+        activeFile: file,
+      }));
     }
   };
 
@@ -43,9 +48,15 @@ const Toolbar = ({
     const contents = await readTextFile(activeFile);
 
     if (openedFiles?.includes(activeFile)) {
-      setActiveFile(activeFile);
+      setFiles((prevState) => ({
+        openedFiles: prevState.openedFiles,
+        activeFile: activeFile,
+      }));
     } else {
-      setOpenedFiles((prevState) => [...prevState, activeFile]);
+      setFiles((prevState) => ({
+        openedFiles: [...prevState.openedFiles, activeFile],
+        activeFile: prevState.activeFile,
+      }));
     }
 
     setCode(contents);
@@ -59,8 +70,12 @@ const Toolbar = ({
 
     const directory = await readDir(selected, { recursive: true });
 
-    setOpenedFiles([]);
-    setActiveDir(directory);
+    setFiles({
+      openedFiles: [],
+      activeFile: null,
+    });
+
+    setDirectory(directory);
   };
 
   useEffect(() => {

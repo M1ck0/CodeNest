@@ -1,15 +1,19 @@
 import React from "react";
 
+import { useRecoilState, useSetRecoilState } from "recoil";
+
+import { filesState } from "../../state/files";
+import { codeState } from "../../state/code";
+
 import "./tabs.scss";
 
-const Tabs = ({
-  openedFiles,
-  activeFile,
-  setActiveFile,
-  setCode,
-  setOpenedFiles,
-  onTabClick,
-}) => {
+const Tabs = () => {
+  const [files, setFiles] = useRecoilState(filesState);
+
+  const setCode = useSetRecoilState(codeState);
+
+  const { activeFile, openedFiles } = files;
+
   const closeFile = (file) => {
     const newFiles = openedFiles?.filter((item) => item !== file);
 
@@ -19,8 +23,14 @@ const Tabs = ({
       }
     }
 
-    setActiveFile(newFiles[0]);
-    setOpenedFiles(newFiles);
+    setFiles({ openedFiles: newFiles, activeFile: newFiles[0] });
+  };
+
+  const onTabClick = (file) => {
+    setFiles((prevState) => ({
+      openedFiles: prevState.openedFiles,
+      activeFile: file,
+    }));
   };
 
   return (

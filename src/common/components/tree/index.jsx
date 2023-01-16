@@ -1,11 +1,18 @@
 import React, { useState } from "react";
 
+import { useRecoilValue, useSetRecoilState } from "recoil";
+
+import { filesState } from "../../state/files";
+import { directoryState } from "../../state/directory";
+
 import "./tree.scss";
 
-function TreeNode({ item, onFileClick = (path) => {} }) {
+function TreeNode({ item }) {
   const [open, setOpen] = useState(false);
 
-  const children = item?.children?.sort((a, b) => {
+  const setFiles = useSetRecoilState(filesState);
+
+  const children = [...(item?.children || [])]?.sort((a, b) => {
     if (a.name.startsWith(".") && !b.name.startsWith(".")) {
       if (!a.children && b.children) return 1;
       return -1;
@@ -33,7 +40,10 @@ function TreeNode({ item, onFileClick = (path) => {} }) {
     if (item?.children) {
       setOpen(!open);
     } else {
-      onFileClick(item?.path);
+      setFiles((prevState) => ({
+        openedFiles: prevState.openedFiles,
+        activeFile: item?.path,
+      }));
     }
   };
 
@@ -45,11 +55,7 @@ function TreeNode({ item, onFileClick = (path) => {} }) {
       {open && children && (
         <ul style={{ marginLeft: "-15px" }}>
           {children?.map((child) => (
-            <TreeNode
-              item={child}
-              key={child?.name}
-              onFileClick={onFileClick}
-            />
+            <TreeNode item={child} key={child?.path} />
           ))}
         </ul>
       )}
@@ -57,8 +63,10 @@ function TreeNode({ item, onFileClick = (path) => {} }) {
   );
 }
 
-const Tree = ({ items, onFileClick = (path) => {} }) => {
-  const sortedItems = items?.sort((a, b) => {
+const Tree = () => {
+  const items = useRecoilValue(directoryState);
+
+  const sortedItems = [...(items || [])]?.sort((a, b) => {
     if (a.name.startsWith(".") && !b.name.startsWith(".")) {
       if (!a.children && b.children) return 1;
       return -1;
@@ -85,7 +93,7 @@ const Tree = ({ items, onFileClick = (path) => {} }) => {
   return (
     <ul className="tree">
       {sortedItems?.map((item) => (
-        <TreeNode item={item} key={item?.name} onFileClick={onFileClick} />
+        <TreeNode item={item} key={item?.path} />
       ))}
     </ul>
   );
