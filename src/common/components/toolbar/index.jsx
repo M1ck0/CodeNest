@@ -10,6 +10,8 @@ import { codeState } from "../../state/code";
 
 import "./toolbar.scss";
 
+// TODO: Functions for opening directories/files have some delay when clicking on item. Probably problem with open() from @tauri-apps. Investigate this
+
 const Toolbar = () => {
   const [files, setFiles] = useRecoilState(filesState);
   const [code, setCode] = useRecoilState(codeState);

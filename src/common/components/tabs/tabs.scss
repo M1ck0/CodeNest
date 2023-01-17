@@ -1,5 +1,7 @@
 .tabs {
   display: flex;
+  width: calc(100% - 200px);
+  overflow-x: auto;
 
   .tab {
     font-size: 1.6rem;
