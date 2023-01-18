@@ -70,12 +70,16 @@ const Toolbar = () => {
       multiple: false,
     });
 
-    const directory = await readDir(selected, { recursive: true });
+    if (selected) {
+      setDirectory([]);
+      setFiles({
+        openedFiles: [],
+        activeFile: null,
+      });
+    }
 
-    setFiles({
-      openedFiles: [],
-      activeFile: null,
-    });
+    // TODO: Improve performance for bigger directories. Maybe sort subdirectories when user clicks to expand them
+    const directory = await readDir(selected, { recursive: true });
 
     setDirectory(directory);
   };

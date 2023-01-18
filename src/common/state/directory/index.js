@@ -2,15 +2,12 @@ import { atom, selector } from "recoil";
 
 let sortedItems = {};
 
-// TODO: Improve performance for bigger directories. Maybe sort subdirectories when user clicks to expand them
-
-// TODO: When opening big directories, it doesn't always shows everything. Might be rendering issue, but probably there is an issue with sorting algorithm
-
-function sortItemsRecursive(items, isSorted = false) {
+const sortItemsRecursive = (items, isSorted = false) => {
   if (isSorted && sortedItems[items]) {
     return sortedItems[items];
   }
-  items = items.sort((a, b) => {
+
+  items = [...items].sort((a, b) => {
     if (a.name.startsWith(".") && !b.name.startsWith(".")) {
       if (!a.children && b.children) return 1;
       return -1;
@@ -29,12 +26,16 @@ function sortItemsRecursive(items, isSorted = false) {
   sortedItems[items] = items;
 
   for (let i = 0; i < items?.length; i++) {
-    if (items[i].children) {
-      items[i].children = sortItemsRecursive(items[i].children, true);
+    if (items[i]?.children) {
+      items[i] = {
+        ...items[i],
+        children: sortItemsRecursive(items[i].children, true),
+      };
     }
   }
   return items;
-}
+};
+
 const directoryData = atom({
   key: "directoryData",
   default: [],

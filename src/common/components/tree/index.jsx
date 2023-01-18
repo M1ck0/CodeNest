@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
+import Loader from "../loader/index.jsx";
+
 import { filesState } from "../../state/files";
 import { directoryState } from "../../state/directory";
 
@@ -12,7 +14,7 @@ function TreeNode({ item }) {
 
   const setFiles = useSetRecoilState(filesState);
 
-  const onClick = () => {
+  const onClick = async () => {
     if (item?.children) {
       setOpen((prevState) => !prevState);
     } else {
@@ -42,7 +44,9 @@ function TreeNode({ item }) {
 const Tree = () => {
   const items = useRecoilValue(directoryState);
 
-  return (
+  return !items?.length ? (
+    <Loader />
+  ) : (
     <ul className="tree">
       {items?.map((item) => (
         <TreeNode item={item} key={item?.path} />
